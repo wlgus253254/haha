@@ -32,18 +32,13 @@ jobs:
         mysql version: '8.0'
         mysql database: 'istory'
         mysql root password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-        #mysql user: ${{ secrets.MYSQL_USER }}
+        #mysql username: ${{ secrets.MYSQL_USER }}
         #mysql password: ${{ secrets.MYSQL_USER_PASSWORD }}
 
     - name: 5. Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
-#
-#    - name: Publish to GitHub Packages
-#      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-#      with:
-#        arguments: publish
-#      env:
-#        USERNAME: ${{ github.actor }}
-#        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 6. Docker Image Build
+      run: docker build ./xinfra/docker -t ${{ secrets.DOCKER_USERNAME }}/istory -f ./xinfra/docker/Dockerfile
