@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istory
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: istory
+  template:
+    metadata:
+      labels:
+        app: istory
+    spec:
+      containers:
+      - name: istory
+        image: dangtong/istory
+        env:
+          - name: spring.datasource.username
+            valueFrom:
+              configMapKeyRef:
+                name: istory-db-config
+                key: MYSQL_USER
+          - name: spring.datasource.password
+            valueFrom:
+              secretKeyRef:
+                name: istory-db-secret
+                key: MYSQL_PASSWORD
+        envFrom:
+          - configMapRef:
+              name: istory-app-config
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "300m"
+          limits:
+            memory: "600Mi"
+            cpu: "400m"
+        readinessProbe:
+          httpGet:
+            path: /actuator
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          successThreshold: 2
+          failureThreshold: 3
+          periodSeconds: 10
+        ports:
+        - containerPort: 8080
+
+
