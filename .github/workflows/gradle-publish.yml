@@ -24,7 +24,18 @@ jobs:
     - name: 3. Change Execute Mode
       run: chmod +x ./gradlew
 
-    - name: 4. Build with Gradle
+    - name: 4. Install Mysql
+      uses: mirrormutth/mysql-action@v1.1
+      with:
+        host port: 3306
+        container port: 3306
+        mysql version: '8.0'
+        mysql database: 'istory'
+        mysql root password: 'admin123'
+        mysql user: 'dangtong'
+        mysql password: 'admin123'
+
+    - name: 5. Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
